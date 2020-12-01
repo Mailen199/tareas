@@ -1,35 +1,35 @@
 let fs = require('fs');
+let tareasJSON = JSON.parse(fs.readFileSync('./tareas.json', 'utf-8'))
+
+
 module.exports = moduloTareas = {
-    archivo : './tareas.json',
-    leerJSON : function() {
-        let listaDeTareas = fs.readFileSync(this.archivo,'utf-8');
-        return JSON.parse(listaDeTareas)
+    archivo: './tareas.json',
+    leerJSON: function () {
+        return tareasJSON;
     },
-    escribirJSON : function(titulo,estado){
+    escribirJSON: function (titulo, estado) {
         let nuevaTarea = {
-            titulo : titulo,
-            estado : estado
+            titulo: titulo,
+            estado: estado == undefined ? 'Pendiente' : estado,
         }
-        let tareasAnteriores = this.leerJSON();
-        tareasAnteriores.push(nuevaTarea);
-        this.guardarJSON(tareasAnteriores)
+        tareasJSON.push(nuevaTarea);
+        console.log(tareasJSON);
+
+        this.guardarJSON(tareasJSON);
     },
-    guardarJSON : function(info){
-        let nuevoJSON = JSON.stringify(info);
-        fs.writeFileSync(this.archivo,nuevoJSON,'utf-8');
-        return console.log('El JSON ha sido guardado exitosamente')
+    guardarJSON: function (informacion) {
+        let nuevoJSON = JSON.stringify(informacion);
+        fs.writeFileSync(this.archivo, nuevoJSON, 'utf-8');
+        console.log('Guardado exitosamente');
     },
-    deshacer : function(){
-        let tareas = this.leerJSON()
-        tareas.pop()
-        this.guardarJSON(tareas)
+    borrarJSON: function () {
+        tareasJSON.pop();
+        moduloTareas.guardarJSON(tareasJSON);
     },
-    buscarTarea : function(busqueda){
-        let listaDeTareas = this.leerJSON();
-        let tareasFiltradas = listaDeTareas.filter(function(tarea){
+    buscarJSON: function (busqueda) {
+        let tareasFiltradas = tareasJSON.filter(function (tarea) {
             return tarea.titulo.toLowerCase().includes(busqueda.toLowerCase())
         })
         return tareasFiltradas
     }
 }
-
